@@ -76,6 +76,21 @@ body {
     padding: 12px 16px;
     border-radius: 12px;
     word-wrap: break-word;
+    line-height: 1.6;
+}
+
+.message-content strong {
+    font-weight: 600;
+}
+
+.message-content em {
+    font-style: italic;
+}
+
+.message-content br {
+    display: block;
+    content: "";
+    margin: 8px 0;
 }
 
 .user-message .message-content {

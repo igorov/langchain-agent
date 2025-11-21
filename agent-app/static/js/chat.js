@@ -84,9 +84,9 @@ function addMessage(text, type) {
     const contentDiv = document.createElement('div');
     contentDiv.className = 'message-content';
     
-    const textP = document.createElement('p');
-    textP.textContent = text;
-    contentDiv.appendChild(textP);
+    // Format text with proper line breaks and structure
+    const formattedText = formatMessageText(text);
+    contentDiv.innerHTML = formattedText;
     
     const timeDiv = document.createElement('div');
     timeDiv.className = 'message-time';
@@ -97,6 +97,35 @@ function addMessage(text, type) {
     
     chatMessages.appendChild(messageDiv);
     scrollToBottom();
+}
+
+function formatMessageText(text) {
+    // Escape HTML to prevent XSS
+    const escapeHtml = (str) => {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    };
+    
+    let escaped = escapeHtml(text);
+    
+    // Convert numbered lists (1. 2. 3. etc.)
+    escaped = escaped.replace(/(\d+)\.\s+\*\*([^*]+)\*\*:/g, '<strong>$1. $2:</strong>');
+    
+    // Convert bold text (**text**)
+    escaped = escaped.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    
+    // Convert italic text (*text* or _text_)
+    escaped = escaped.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+    escaped = escaped.replace(/_([^_]+)_/g, '<em>$1</em>');
+    
+    // Convert line breaks to <br>
+    escaped = escaped.replace(/\n/g, '<br>');
+    
+    // Convert bullet points (- item)
+    escaped = escaped.replace(/^- (.+)(<br>|$)/gm, '• $1$2');
+    
+    return escaped;
 }
 
 function showTypingIndicator() {
